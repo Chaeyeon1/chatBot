@@ -100,10 +100,10 @@ const Home = () => {
           </tr>
         </thead>
         <tbody>
-          {moneyData.map((moneyInfo) => {
+          {moneyData.map((moneyInfo, i) => {
             return (
               <tr key={moneyInfo.id}>
-                <td>{moneyInfo.id}</td>
+                <td>{i + 1}</td>
                 <td>{moneyInfo.money}원</td>
                 <td>{moneyInfo.date.slice(0, 10)}</td>
                 <td>
