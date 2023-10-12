@@ -58,7 +58,6 @@ const Home = () => {
 
   return (
     <div>
-      <button onClick={() => postData()}>추가</button>
       <table>
         <thead>
           <tr>
