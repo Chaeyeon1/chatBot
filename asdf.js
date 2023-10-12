@@ -53,5 +53,40 @@ function response(
     replier.reply(msg + "는 너");
   } else if (msg.includes("송충이")) {
     replier.reply(msg + " 송충이 그만말해라 더럽다.");
+  } else if (msg.startsWith("/추가 ")) {
+    const money = msg.substr(4);
+    postData(money);
+  }
+}
+
+function postData(msg) {
+  const data = {
+    money: msg,
+  };
+
+  try {
+    const url = "/api";
+    const method = "POST";
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const body = JSON.stringify(data);
+
+    const response = org.jsoup.Jsoup.connect(url)
+      .method(method)
+      .requestBody(body)
+      .header("Content-Type", headers["Content-Type"])
+      .ignoreContentType(true)
+      .execute();
+
+    if (response.statusCode() === 200) {
+      const responseData = JSON.parse(response.body());
+      console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
+      fetchData();
+    } else {
+      console.error("POST 요청 실패:", response.statusMessage());
+    }
+  } catch (error) {
+    console.error("에러:", error);
   }
 }

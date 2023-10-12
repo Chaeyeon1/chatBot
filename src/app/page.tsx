@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
+  const [money, setMoney] = useState(0);
   const [moneyData, setMoneyData] = useState<
     {
       id: number;
@@ -26,13 +27,39 @@ const Home = () => {
     }
   }
 
-  async function postData() {
+  async function postData(money: number) {
     const data = {
-      money: 10000,
+      money,
     };
 
     try {
       const response = await fetch("/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
+        fetchData();
+      } else {
+        console.error("POST 요청 실패:", response.statusText);
+      }
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  }
+
+  async function deleteData(id: number) {
+    const data = {
+      id,
+    };
+
+    try {
+      const response = await fetch("/api/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,6 +85,12 @@ const Home = () => {
 
   return (
     <div>
+      <input
+        type="text"
+        value={money}
+        onChange={(e) => setMoney(Number(e.target.value))}
+      />
+      <button onClick={() => postData(money)}>추가</button>
       <table>
         <thead>
           <tr>
@@ -73,9 +106,18 @@ const Home = () => {
                 <td>{moneyInfo.id}</td>
                 <td>{moneyInfo.money}원</td>
                 <td>{moneyInfo.date.slice(0, 10)}</td>
+                <td>
+                  <button onClick={() => deleteData(moneyInfo.id)}>삭제</button>
+                </td>
               </tr>
             );
           })}
+          <tr>
+            <td>총 합계</td>
+            <td>
+              {moneyData.reduce((total, item) => total + item.money, 0)}원
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
