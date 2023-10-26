@@ -89,43 +89,49 @@ const Home = () => {
 
   return (
     <div>
-      <input
-        type="text"
-        value={content}
-        placeholder="내용"
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <input
-        type="text"
-        value={writer}
-        placeholder="작성자"
-        onChange={(e) => setWriter(e.target.value)}
-      />
-      <button onClick={() => postData({ content, writer })}>추가</button>
-      {memoData.map((memoInfo) => {
-        return (
-          <div
-            style={{
-              width: "200px",
-              height: "200px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              overflow: "auto",
-              flexDirection: "column",
-              backgroundColor: "lightyellow",
-            }}
-            key={memoInfo.id}
-          >
-            <div style={{ color: "black" }}>{memoInfo.content}</div>
-            <div style={{ color: "black" }}>작성자 : {memoInfo.writer}</div>
-            <div style={{ color: "black" }}>
-              날짜 : {memoInfo.createdAt.slice(0, 10)}
+      <div style={{ marginBottom: "40px" }}>
+        <input
+          type="text"
+          value={content}
+          placeholder="내용"
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <input
+          type="text"
+          value={writer}
+          placeholder="작성자"
+          onChange={(e) => setWriter(e.target.value)}
+        />
+        <button onClick={() => postData({ content, writer })}>추가</button>
+      </div>
+      <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
+        {memoData.map((memoInfo) => {
+          return (
+            <div
+              style={{
+                borderRadius: "4px",
+                width: "200px",
+                height: "200px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                overflow: "auto",
+                flexDirection: "column",
+                backgroundColor: "lightyellow",
+                padding: "16px",
+              }}
+              key={memoInfo.id}
+            >
+              <div style={{ color: "black" }}>{memoInfo.content}</div>
+              <div style={{ color: "black" }}>작성자 : {memoInfo.writer}</div>
+              <div style={{ color: "black" }}>
+                날짜 : {memoInfo.createdAt.slice(0, 10)}
+              </div>
+              <button onClick={() => deleteData(memoInfo.id)}>삭제</button>
             </div>
-            <button onClick={() => deleteData(memoInfo.id)}>삭제</button>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
