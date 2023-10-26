@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
-  const [money, setMoney] = useState(0);
-  const [moneyData, setMoneyData] = useState<
+  const [content, setContent] = useState("");
+  const [writer, setWriter] = useState("");
+  const [memoData, setMemoData] = useState<
     {
       id: number;
-      money: number;
-      date: string;
+      writer: number;
+      content: string;
+      createdAt: string;
     }[]
   >([]);
 
@@ -18,7 +20,7 @@ const Home = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("반환된 데이터:", data);
-        setMoneyData(data);
+        setMemoData(data);
       } else {
         console.error("API 요청 실패:", response.statusText);
       }
@@ -27,24 +29,26 @@ const Home = () => {
     }
   }
 
-  async function postData(money: number) {
-    const data = {
-      money,
-    };
-
+  async function postData({
+    content,
+    writer,
+  }: {
+    content: string;
+    writer: string;
+  }) {
     try {
       const response = await fetch("/api", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ content, writer }),
       });
 
       if (response.ok) {
         const responseData = await response.json();
         console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
-        fetchData();
+        await fetchData();
       } else {
         console.error("POST 요청 실패:", response.statusText);
       }
@@ -70,7 +74,7 @@ const Home = () => {
       if (response.ok) {
         const responseData = await response.json();
         console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
-        fetchData();
+        await fetchData();
       } else {
         console.error("POST 요청 실패:", response.statusText);
       }
@@ -87,39 +91,41 @@ const Home = () => {
     <div>
       <input
         type="text"
-        value={money}
-        onChange={(e) => setMoney(Number(e.target.value))}
+        value={content}
+        placeholder="내용"
+        onChange={(e) => setContent(e.target.value)}
       />
-      <button onClick={() => postData(money)}>추가</button>
-      <table>
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>돈</th>
-            <th>날짜</th>
-          </tr>
-        </thead>
-        <tbody>
-          {moneyData.map((moneyInfo, i) => {
-            return (
-              <tr key={moneyInfo.id}>
-                <td>{i + 1}</td>
-                <td>{moneyInfo.money}원</td>
-                <td>{moneyInfo.date.slice(0, 10)}</td>
-                <td>
-                  <button onClick={() => deleteData(moneyInfo.id)}>삭제</button>
-                </td>
-              </tr>
-            );
-          })}
-          <tr>
-            <td>총 합계</td>
-            <td>
-              {moneyData.reduce((total, item) => total + item.money, 0)}원
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <input
+        type="text"
+        value={writer}
+        placeholder="작성자"
+        onChange={(e) => setWriter(e.target.value)}
+      />
+      <button onClick={() => postData({ content, writer })}>추가</button>
+      {memoData.map((memoInfo) => {
+        return (
+          <div
+            style={{
+              width: "200px",
+              height: "200px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "auto",
+              flexDirection: "column",
+              backgroundColor: "lightyellow",
+            }}
+            key={memoInfo.id}
+          >
+            <div style={{ color: "black" }}>{memoInfo.content}</div>
+            <div style={{ color: "black" }}>작성자 : {memoInfo.writer}</div>
+            <div style={{ color: "black" }}>
+              날짜 : {memoInfo.createdAt.slice(0, 10)}
+            </div>
+            <button onClick={() => deleteData(memoInfo.id)}>삭제</button>
+          </div>
+        );
+      })}
     </div>
   );
 };

@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 
   const { id } = res;
 
-  const deletedUser = await client.stock.delete({
+  const deletedUser = await client.frontMemo.delete({
     where: { id: Number(id) },
   });
 

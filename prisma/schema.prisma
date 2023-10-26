@@ -9,6 +9,22 @@ generator client {
 
 model Stock {
   id    Int    @id @default(autoincrement())
-  date DateTime
+  date DateTime 
   money Int
+}
+
+model FrontMemo {
+  id         Int      @default(autoincrement()) @id
+  createdAt  DateTime 
+  writer     String
+  content    String
+  comments   FrontMemoComment[] 
+}
+
+model FrontMemoComment {
+  id         Int      @default(autoincrement()) @id
+  createdAt  DateTime 
+  content    String
+  memo       FrontMemo @relation(fields: [memoId], references: [id])
+  memoId     Int
 }
