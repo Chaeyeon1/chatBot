@@ -3,10 +3,17 @@ import { PrismaClient } from "@prisma/client";
 
 const client = new PrismaClient();
 
-export async function GET() {
-  const allUsers = await client.frontMemo.findMany();
+export async function GET(request: Request) {
+  const res = await request.json();
+  const { id } = res;
 
-  return NextResponse.json(allUsers);
+  const user = await client.frontMemo.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return NextResponse.json(user);
 }
 
 export async function POST(request: Request) {

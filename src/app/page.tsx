@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 const Home = () => {
   const [content, setContent] = useState("");
   const [writer, setWriter] = useState("");
+  const [searchWriter, setSearchWriter] = useState("");
   const [memoData, setMemoData] = useState<
     {
       id: number;
@@ -14,6 +15,7 @@ const Home = () => {
     }[]
   >([]);
 
+  // 모든 데이터 불러오기
   async function fetchData() {
     try {
       const response = await fetch("/api");
@@ -29,6 +31,23 @@ const Home = () => {
     }
   }
 
+  // 이름 정렬 데이터 불러오기
+  async function nameFetchData({ searchWriter }: { searchWriter: string }) {
+    try {
+      const response = await fetch(`/api/post/user?writer=${searchWriter}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("반환된 데이터:", data);
+        setMemoData(data);
+      } else {
+        console.error("API 요청 실패:", response.statusText);
+      }
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  }
+
+  // 전송
   async function postData({
     content,
     writer,
@@ -57,6 +76,7 @@ const Home = () => {
     }
   }
 
+  // 삭제
   async function deleteData(id: number) {
     const data = {
       id,
@@ -103,6 +123,17 @@ const Home = () => {
           onChange={(e) => setWriter(e.target.value)}
         />
         <button onClick={() => postData({ content, writer })}>추가</button>
+        <button onClick={() => fetchData()}>전체보기</button>
+      </div>
+      <div style={{ marginBottom: "40px" }}>
+        <span>이름으로 정렬하기</span>
+        <input
+          type="text"
+          value={searchWriter}
+          placeholder="작성자"
+          onChange={(e) => setSearchWriter(e.target.value)}
+        />
+        <button onClick={() => nameFetchData({ searchWriter })}>정렬</button>
       </div>
       <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
         {memoData.map((memoInfo) => {
