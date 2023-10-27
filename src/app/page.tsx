@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
       createdAt: string;
     }[]
   >([]);
+  const router = useRouter();
 
   // 모든 데이터 불러오기
   async function fetchData() {
@@ -150,8 +152,10 @@ const Home = () => {
                 flexDirection: "column",
                 backgroundColor: "lightyellow",
                 padding: "16px",
+                cursor: "pointer",
               }}
               key={memoInfo.id}
+              onClick={() => router.push(`/${memoInfo.id}`)}
             >
               <div style={{ color: "black" }}>{memoInfo.content}</div>
               <div style={{ color: "black" }}>작성자 : {memoInfo.writer}</div>
