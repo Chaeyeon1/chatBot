@@ -22,13 +22,14 @@ export async function POST(request: Request) {
   const offset = 1000 * 60 * 60 * 9;
   const koreaNow = new Date(new Date().getTime() + offset);
 
-  const { id, content } = res;
+  const { id, content, writer } = res;
 
   const postComment = await client.frontMemoComment.create({
     data: {
       memoId: Number(id),
       content: content ?? "",
       createdAt: koreaNow,
+      writer,
     },
   });
 

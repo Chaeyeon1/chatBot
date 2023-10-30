@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 
 function page({ params }: { params: { id: number } }) {
   const [comment, setComment] = useState("");
+  const [writer, setWriter] = useState("");
   const [memoData, setMemoData] = useState<{
     id: number;
-    writer: number;
+    writer: string;
     content: string;
     createdAt: string;
   }>();
@@ -15,6 +16,7 @@ function page({ params }: { params: { id: number } }) {
       id: number;
       content: string;
       createdAt: string;
+      writer: string;
     }[]
   >([]);
 
@@ -51,14 +53,22 @@ function page({ params }: { params: { id: number } }) {
   }
 
   // 전송
-  async function postData({ content }: { content: string }) {
+  async function postData({
+    content,
+    writer,
+  }: {
+    content: string;
+    writer: string;
+  }) {
+    setComment("");
+    setWriter("");
     try {
       const response = await fetch("/api/comment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content, id: params.id }),
+        body: JSON.stringify({ content, id: params.id, writer }),
       });
 
       if (response.ok) {
@@ -99,15 +109,33 @@ function page({ params }: { params: { id: number } }) {
     fetchData();
     fetchCommentData();
   }, []);
+
   return (
     <div>
       <div>{memoData?.content}</div>
       <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
         <div>댓글</div>
-        <input value={comment} onChange={(e) => setComment(e.target.value)} />
-        <button onClick={() => postData({ content: comment })}>전송</button>
+        <input
+          placeholder="내용"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <input
+          placeholder="작성자"
+          value={writer}
+          onChange={(e) => setWriter(e.target.value)}
+        />
+        <button onClick={() => postData({ content: comment, writer })}>
+          전송
+        </button>
       </div>
-      <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          flexDirection: "column",
+        }}
+      >
         {commentData.map((commentInfo) => {
           return (
             <div
@@ -122,6 +150,7 @@ function page({ params }: { params: { id: number } }) {
               }}
               key={commentInfo.id}
             >
+              <div style={{ color: "aqua" }}>{commentInfo.writer}</div>
               <div style={{ color: "white" }}>{commentInfo.content}</div>
               <div style={{ color: "white" }}>
                 {commentInfo.createdAt.slice(11, 16)}
