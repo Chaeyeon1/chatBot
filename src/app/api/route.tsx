@@ -4,9 +4,24 @@ import { PrismaClient } from "@prisma/client";
 const client = new PrismaClient();
 
 export async function GET() {
-  const allUsers = await client.frontMemo.findMany();
+  const allFrontMemos = await client.frontMemo.findMany();
 
-  return NextResponse.json(allUsers);
+  const frontMemosWithCommentCount = await Promise.all(
+    allFrontMemos.map(async (frontMemo) => {
+      const commentCount = await client.frontMemoComment.count({
+        where: {
+          memoId: frontMemo.id,
+        },
+      });
+
+      return {
+        ...frontMemo,
+        commentCount,
+      };
+    })
+  );
+
+  return NextResponse.json(frontMemosWithCommentCount);
 }
 
 export async function POST(request: Request) {

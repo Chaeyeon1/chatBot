@@ -13,6 +13,7 @@ const Home = () => {
       writer: number;
       content: string;
       createdAt: string;
+      commentCount?: number;
     }[]
   >([]);
   const router = useRouter();
@@ -23,7 +24,6 @@ const Home = () => {
       const response = await fetch("/api");
       if (response.ok) {
         const data = await response.json();
-        console.log("반환된 데이터:", data);
         setMemoData(data);
       } else {
         console.error("API 요청 실패:", response.statusText);
@@ -57,6 +57,10 @@ const Home = () => {
     content: string;
     writer: string;
   }) {
+    setContent("");
+    setWriter("");
+    alert("글 작성이 완료되었습니다!");
+
     try {
       const response = await fetch("/api", {
         method: "POST",
@@ -157,12 +161,22 @@ const Home = () => {
               key={memoInfo.id}
               onClick={() => router.push(`/${memoInfo.id}`)}
             >
-              <div style={{ color: "black" }}>{memoInfo.content}</div>
+              <div style={{ color: "black" }}>
+                <span> {memoInfo.content} </span>
+                <span> (댓글 : {memoInfo.commentCount}개) </span>
+              </div>
               <div style={{ color: "black" }}>작성자 : {memoInfo.writer}</div>
               <div style={{ color: "black" }}>
                 날짜 : {memoInfo.createdAt.slice(0, 10)}
               </div>
-              <button onClick={() => deleteData(memoInfo.id)}>삭제</button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteData(memoInfo.id);
+                }}
+              >
+                삭제
+              </button>
             </div>
           );
         })}
