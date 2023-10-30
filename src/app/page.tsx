@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import anonymous from "src/app/img/anonymous.png";
+import Image from "next/image";
 
 const Home = () => {
   const [content, setContent] = useState("");
@@ -115,6 +117,19 @@ const Home = () => {
 
   return (
     <div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div>
+          <Image src={anonymous} alt="anonymous" width={80} height={80} />
+        </div>
+        <div style={{ marginLeft: "10px", fontSize:"30px"}}>FE 고수방</div>
+      </div>
+
       <div style={{ marginBottom: "40px" }}>
         <input
           type="text"
