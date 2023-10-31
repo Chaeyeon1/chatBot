@@ -21,6 +21,12 @@ export async function GET() {
     })
   );
 
+  frontMemosWithCommentCount.sort((a, b) => {
+    const createdAtA = a.createdAt;
+    const createdAtB = b.createdAt;
+    return createdAtB > createdAtA ? 1 : createdAtA > createdAtB ? -1 : 0;
+  });
+
   return NextResponse.json(frontMemosWithCommentCount);
 }
 
