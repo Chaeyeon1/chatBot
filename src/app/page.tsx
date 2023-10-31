@@ -17,6 +17,7 @@ const Home = () => {
     }[]
   >([]);
   const router = useRouter();
+  const [date, setDate] = useState("");
 
   // 모든 데이터 불러오기
   async function fetchData() {
@@ -25,8 +26,6 @@ const Home = () => {
       if (response.ok) {
         const data = await response.json();
         setMemoData(data);
-      } else {
-        console.error("API 요청 실패:", response.statusText);
       }
     } catch (error) {
       console.error("에러:", error);
@@ -39,10 +38,7 @@ const Home = () => {
       const response = await fetch(`/api/post/user?writer=${searchWriter}`);
       if (response.ok) {
         const data = await response.json();
-        console.log("반환된 데이터:", data);
         setMemoData(data);
-      } else {
-        console.error("API 요청 실패:", response.statusText);
       }
     } catch (error) {
       console.error("에러:", error);
@@ -53,9 +49,11 @@ const Home = () => {
   async function postData({
     content,
     writer,
+    date,
   }: {
     content: string;
     writer: string;
+    date: string;
   }) {
     setContent("");
     setWriter("");
@@ -67,15 +65,12 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content, writer }),
+        body: JSON.stringify({ content, writer, date }),
       });
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
         await fetchData();
-      } else {
-        console.error("POST 요청 실패:", response.statusText);
       }
     } catch (error) {
       console.error("에러:", error);
@@ -87,6 +82,7 @@ const Home = () => {
     const data = {
       id,
     };
+    alert("글 삭제가 완료되었습니다!");
 
     try {
       const response = await fetch("/api/delete", {
@@ -99,10 +95,7 @@ const Home = () => {
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
         await fetchData();
-      } else {
-        console.error("POST 요청 실패:", response.statusText);
       }
     } catch (error) {
       console.error("에러:", error);
@@ -111,6 +104,13 @@ const Home = () => {
 
   useEffect(() => {
     fetchData();
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
+    const day = `${today.getDate()}`.padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    setDate(formattedDate);
   }, []);
 
   return (
@@ -128,7 +128,14 @@ const Home = () => {
           placeholder="작성자"
           onChange={(e) => setWriter(e.target.value)}
         />
-        <button onClick={() => postData({ content, writer })}>추가</button>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        <button onClick={() => postData({ content, writer, date })}>
+          추가
+        </button>
         <button onClick={() => fetchData()}>전체보기</button>
       </div>
       <div style={{ marginBottom: "40px" }}>

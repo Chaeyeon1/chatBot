@@ -32,16 +32,16 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const res = await request.json();
-  const offset = 1000 * 60 * 60 * 9;
-  const koreaNow = new Date(new Date().getTime() + offset);
 
-  const { content, writer } = res;
+  const { content, writer, date } = res;
+
+  const createdAt = new Date(date);
 
   const newUser = await client.frontMemo.create({
     data: {
       content: content ?? "",
       writer: writer ?? "",
-      createdAt: koreaNow,
+      createdAt,
     },
   });
 
