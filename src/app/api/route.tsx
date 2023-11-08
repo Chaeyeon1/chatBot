@@ -32,7 +32,7 @@ export async function GET() {
     } else if (createdAtA > createdAtB) {
       return -1;
     } else {
-      return idA - idB;
+      return idB - idA;
     }
   });
 
