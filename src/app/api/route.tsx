@@ -24,7 +24,16 @@ export async function GET() {
   frontMemosWithCommentCount.sort((a, b) => {
     const createdAtA = a.createdAt;
     const createdAtB = b.createdAt;
-    return createdAtB > createdAtA ? 1 : createdAtA > createdAtB ? -1 : 0;
+    const idA = a.id;
+    const idB = b.id;
+
+    if (createdAtB > createdAtA) {
+      return 1;
+    } else if (createdAtA > createdAtB) {
+      return -1;
+    } else {
+      return idA - idB;
+    }
   });
 
   return NextResponse.json(frontMemosWithCommentCount);
