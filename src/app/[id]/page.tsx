@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 function page({ params }: { params: { id: number } }) {
@@ -112,6 +113,9 @@ function page({ params }: { params: { id: number } }) {
 
   return (
     <div>
+      <Link href="/">
+        <button>돌아가기</button>
+      </Link>
       <div>{memoData?.content}</div>
       <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
         <div>댓글</div>
