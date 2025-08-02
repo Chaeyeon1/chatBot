@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 const Home = () => {
-  const [content, setContent] = useState("");
-  const [writer, setWriter] = useState("");
-  const [searchWriter, setSearchWriter] = useState("");
+  const [content, setContent] = useState('');
+  const [writer, setWriter] = useState('');
+  const [searchWriter, setSearchWriter] = useState('');
   const [memoData, setMemoData] = useState<
     {
       id: number;
@@ -17,18 +17,18 @@ const Home = () => {
     }[]
   >([]);
   const router = useRouter();
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState('');
 
   // 모든 데이터 불러오기
   async function fetchData() {
     try {
-      const response = await fetch("/api");
+      const response = await fetch('/api');
       if (response.ok) {
         const data = await response.json();
         setMemoData(data);
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -41,7 +41,7 @@ const Home = () => {
         setMemoData(data);
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -55,15 +55,15 @@ const Home = () => {
     writer: string;
     date: string;
   }) {
-    setContent("");
-    setWriter("");
-    alert("글 작성이 완료되었습니다!");
+    setContent('');
+    setWriter('');
+    alert('글 작성이 완료되었습니다!');
 
     try {
-      const response = await fetch("/api", {
-        method: "POST",
+      const response = await fetch('/api', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content, writer, date }),
       });
@@ -73,7 +73,7 @@ const Home = () => {
         await fetchData();
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -82,13 +82,13 @@ const Home = () => {
     const data = {
       id,
     };
-    alert("글 삭제가 완료되었습니다!");
+    alert('글 삭제가 완료되었습니다!');
 
     try {
-      const response = await fetch("/api/delete", {
-        method: "POST",
+      const response = await fetch('/api/delete', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
@@ -98,7 +98,7 @@ const Home = () => {
         await fetchData();
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -107,83 +107,108 @@ const Home = () => {
 
     const today = new Date();
     const year = today.getFullYear();
-    const month = `${today.getMonth() + 1}`.padStart(2, "0");
-    const day = `${today.getDate()}`.padStart(2, "0");
+    const month = `${today.getMonth() + 1}`.padStart(2, '0');
+    const day = `${today.getDate()}`.padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
     setDate(formattedDate);
   }, []);
 
   return (
     <div>
-      <div style={{ marginBottom: "40px" }}>
+      <div style={{ marginBottom: '40px' }}>
         <input
-          type="text"
+          type='text'
           value={content}
-          placeholder="내용"
+          style={{ marginRight: '8px' }}
+          placeholder='내용'
           onChange={(e) => setContent(e.target.value)}
         />
         <input
-          type="text"
+          type='text'
           value={writer}
-          placeholder="작성자"
+          style={{ marginRight: '8px' }}
+          placeholder='작성자'
           onChange={(e) => setWriter(e.target.value)}
         />
         <input
-          type="date"
+          type='date'
+          style={{ marginRight: '8px' }}
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
-        <button onClick={() => postData({ content, writer, date })}>
+        <button
+          style={{ marginRight: '8px' }}
+          onClick={() => postData({ content, writer, date })}
+        >
           추가
         </button>
-        <button onClick={() => fetchData()}>전체보기</button>
+        {/* <button onClick={() => fetchData()}>전체보기</button> */}
       </div>
-      <div style={{ marginBottom: "40px" }}>
-        <span>이름으로 정렬하기</span>
+      <div style={{ marginBottom: '40px' }}>
+        <span style={{ marginRight: '16px' }}>이름으로 정렬하기</span>
         <input
-          type="text"
+          type='text'
+          style={{ marginRight: '8px' }}
           value={searchWriter}
-          placeholder="작성자"
+          placeholder='작성자'
           onChange={(e) => setSearchWriter(e.target.value)}
         />
         <button onClick={() => nameFetchData({ searchWriter })}>정렬</button>
       </div>
-      <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
+      <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
         {memoData.map((memoInfo) => {
           return (
             <div
               style={{
-                borderRadius: "4px",
-                width: "200px",
-                height: "200px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "auto",
-                flexDirection: "column",
-                backgroundColor: "lightyellow",
-                padding: "16px",
-                cursor: "pointer",
+                borderRadius: '4px',
+                width: '200px',
+                height: '200px',
+                display: 'flex',
+                overflow: 'auto',
+                flexDirection: 'column',
+                backgroundColor: 'lightyellow',
+                padding: '16px',
+                textAlign: 'start',
+                cursor: 'pointer',
               }}
               key={memoInfo.id}
               onClick={() => router.push(`/${memoInfo.id}`)}
             >
-              <div style={{ color: "black" }}>
-                <span> {memoInfo.content} </span>
-                <span> (댓글 : {memoInfo.commentCount}개) </span>
-              </div>
-              <div style={{ color: "black" }}>작성자 : {memoInfo.writer}</div>
-              <div style={{ color: "black" }}>
-                날짜 : {memoInfo.createdAt.slice(0, 10)}
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  deleteData(memoInfo.id);
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '8px',
                 }}
               >
-                삭제
-              </button>
+                <div style={{ color: 'black', flex: 1, fontWeight: 'bold' }}>
+                  {memoInfo.createdAt.slice(0, 10)}
+                </div>
+                <button
+                  style={{
+                    width: 'fit-content',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteData(memoInfo.id);
+                  }}
+                >
+                  🗑️
+                </button>
+              </div>
+              <div style={{ color: 'black', marginBottom: '8px' }}>
+                <span> {memoInfo.content} </span>
+              </div>
+              <div style={{ color: 'black', marginBottom: '8px' }}>
+                FROM : {memoInfo.writer}
+              </div>
+              <div style={{ color: 'black', marginBottom: '8px' }}>
+                📮 {memoInfo.commentCount}개
+              </div>
             </div>
           );
         })}

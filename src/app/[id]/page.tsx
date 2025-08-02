@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 function page({ params }: { params: { id: number } }) {
-  const [comment, setComment] = useState("");
-  const [writer, setWriter] = useState("");
+  const [comment, setComment] = useState('');
+  const [writer, setWriter] = useState('');
   const [memoData, setMemoData] = useState<{
     id: number;
     writer: string;
@@ -27,13 +27,13 @@ function page({ params }: { params: { id: number } }) {
       const response = await fetch(`/api/post?id=${params.id}`);
       if (response.ok) {
         const data = await response.json();
-        console.log("반환된 데이터:", data);
+        console.log('반환된 데이터:', data);
         setMemoData(data);
       } else {
-        console.error("API 요청 실패:", response.statusText);
+        console.error('API 요청 실패:', response.statusText);
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -43,13 +43,13 @@ function page({ params }: { params: { id: number } }) {
       const response = await fetch(`/api/comment?id=${params.id}`);
       if (response.ok) {
         const data = await response.json();
-        console.log("반환된 데이터:", data);
+        console.log('반환된 데이터:', data);
         setCommentData(data);
       } else {
-        console.error("API 요청 실패:", response.statusText);
+        console.error('API 요청 실패:', response.statusText);
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -61,26 +61,26 @@ function page({ params }: { params: { id: number } }) {
     content: string;
     writer: string;
   }) {
-    setComment("");
-    setWriter("");
+    setComment('');
+    setWriter('');
     try {
-      const response = await fetch("/api/comment", {
-        method: "POST",
+      const response = await fetch('/api/comment', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content, id: params.id, writer }),
       });
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
+        console.log('POST 요청 성공, 서버 응답 데이터:', responseData);
         await fetchCommentData();
       } else {
-        console.error("POST 요청 실패:", response.statusText);
+        console.error('POST 요청 실패:', response.statusText);
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -88,21 +88,21 @@ function page({ params }: { params: { id: number } }) {
   async function deleteData(id: number) {
     try {
       const response = await fetch(`/api/comment?id=${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log("POST 요청 성공, 서버 응답 데이터:", responseData);
+        console.log('POST 요청 성공, 서버 응답 데이터:', responseData);
         await fetchCommentData();
       } else {
-        console.error("POST 요청 실패:", response.statusText);
+        console.error('POST 요청 실패:', response.statusText);
       }
     } catch (error) {
-      console.error("에러:", error);
+      console.error('에러:', error);
     }
   }
 
@@ -112,20 +112,43 @@ function page({ params }: { params: { id: number } }) {
   }, []);
 
   return (
-    <div>
-      <Link href="/">
-        <button>돌아가기</button>
+    <div style={{ textAlign: 'start' }}>
+      <Link href='/'>
+        <button>{'<= 돌아가기'}</button>
       </Link>
-      <div>{memoData?.content}</div>
-      <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
-        <div>댓글</div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          marginTop: '20px',
+          alignItems: 'center',
+          borderBottom: '1px solid white',
+          paddingBottom: '12px',
+        }}
+      >
+        <div style={{ marginRight: '8px', color: 'aqua' }}>
+          {memoData?.writer}
+        </div>
+        <div> {memoData?.content}</div>
+      </div>
+      <div style={{ marginTop: '20px', fontSize: '16px', marginBottom: '8px' }}>
+        댓글
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          gap: '8px',
+          width: '400px',
+          marginBottom: '16px',
+        }}
+      >
         <input
-          placeholder="내용"
+          placeholder='내용'
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
         <input
-          placeholder="작성자"
+          placeholder='작성자'
           value={writer}
           onChange={(e) => setWriter(e.target.value)}
         />
@@ -135,28 +158,27 @@ function page({ params }: { params: { id: number } }) {
       </div>
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "column",
+          display: 'flex',
+          flexWrap: 'wrap',
+          flexDirection: 'column',
         }}
       >
         {commentData.map((commentInfo) => {
           return (
             <div
               style={{
-                borderRadius: "4px",
-                width: "fit-content",
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "row",
-                padding: "16px",
-                gap: "8px",
+                borderRadius: '4px',
+                width: 'fit-content',
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'row',
+                gap: '8px',
               }}
               key={commentInfo.id}
             >
-              <div style={{ color: "aqua" }}>{commentInfo.writer}</div>
-              <div style={{ color: "white" }}>{commentInfo.content}</div>
-              <div style={{ color: "white" }}>
+              <div style={{ color: 'aqua' }}>{commentInfo.writer}</div>
+              <div style={{ color: 'white' }}>{commentInfo.content}</div>
+              <div style={{ color: 'white' }}>
                 {commentInfo.createdAt.slice(11, 16)}
               </div>
               <button onClick={() => deleteData(commentInfo.id)}>삭제</button>
